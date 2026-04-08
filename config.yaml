@@ -1,5 +1,7 @@
 agent:
-  name: "ui-engineering"
+  name: "Nexus"
+  display_name: "Nexus - UI Engineering Agent"
+  tagline: "The nexus of design and code"
   version: "1.0.0"
   model: "claude-sonnet-4.5"  # Default model
 

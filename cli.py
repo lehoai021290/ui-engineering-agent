@@ -16,7 +16,9 @@ from pathlib import Path
 @click.version_option(version="1.0.0")
 def cli():
     """
-    UI Engineering Agent - Design-to-Code Automation
+    Nexus - UI Engineering Agent
+
+    🔷 The nexus of design and code
 
     Intelligent agent for generating web prototypes and Figma UI
     from design specifications, requirements, or prompts.
@@ -36,7 +38,7 @@ def watch(interval, max_iterations):
     """
     orchestrator = WorkflowOrchestrator()
 
-    click.echo(click.style("🔍 UI Engineering Agent - Watch Mode", fg='cyan', bold=True))
+    click.echo(click.style("🔷 Nexus - Watch Mode", fg='cyan', bold=True))
     click.echo()
 
     orchestrator.watch_for_handoff(interval=interval, max_iterations=max_iterations)
@@ -56,7 +58,7 @@ def implement(design_spec_path):
     """
     orchestrator = WorkflowOrchestrator()
 
-    click.echo(click.style("🚀 UI Engineering Agent - Manual Implementation", fg='cyan', bold=True))
+    click.echo(click.style("🔷 Nexus - Manual Implementation", fg='cyan', bold=True))
     click.echo(f"   Design Spec: {design_spec_path}")
     click.echo()
 
@@ -86,7 +88,7 @@ def generate(prompt):
 
     user_prompt = " ".join(prompt)
 
-    click.echo(click.style("⚡ UI Engineering Agent - Quick Generation", fg='cyan', bold=True))
+    click.echo(click.style("🔷 Nexus - Quick Generation", fg='cyan', bold=True))
     click.echo(f"   Prompt: {user_prompt}")
     click.echo()
 
@@ -270,7 +272,8 @@ def info():
     with open(config_path, 'r') as f:
         config = yaml.safe_load(f)
 
-    click.echo(click.style("UI Engineering Agent v1.0.0", fg='cyan', bold=True))
+    click.echo(click.style("🔷 Nexus - UI Engineering Agent v1.0.0", fg='cyan', bold=True))
+    click.echo(click.style("   The nexus of design and code", fg='cyan'))
     click.echo()
 
     click.echo(click.style("Configuration:", fg='yellow', bold=True))

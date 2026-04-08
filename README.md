@@ -1,4 +1,6 @@
-# UI Engineering Agent
+# Nexus - UI Engineering Agent
+
+🔷 **"The nexus of design and code"**
 
 Intelligent agent for design-to-code workflows with **zero dependency conflicts**. Transforms design specifications, requirements, or prompts into web prototypes and Figma UI.
 
