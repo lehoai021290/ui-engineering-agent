@@ -1,0 +1,11 @@
+# UI Engineering Agent - Minimal Dependencies
+# Refactored to remove CrewAI dependency conflicts
+
+# CLI Interface
+click>=8.1.0
+
+# Configuration & Data
+pyyaml>=6.0
+
+# Note: Skills (figma_ui_generation, web_prototype_generation) are standalone
+# and call MCP tools directly through Claude Code - no Python AI frameworks needed!
