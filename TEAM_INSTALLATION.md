@@ -4,11 +4,12 @@ This guide helps your team members install and use the Nexus UI engineering agen
 
 ## What is Nexus?
 
-Nexus is a specialized UI engineering agent that automates design-to-code workflows:
-- Converts Figma designs to production-ready React code
-- Generates prototypes from website URLs
-- Implements design system components
-- Maintains design-code synchronization
+Nexus is a specialized UI engineering agent that generates web prototypes and Figma designs from requirements:
+- Generates functional web prototypes (HTML/CSS/JS) from requirements, wireframes, or direct prompts
+- Creates Figma UI visualizations FROM code (not the other way around)
+- Makes autonomous design decisions when specs are incomplete
+- Validates accessibility (WCAG 2.1 AA) and performance (Lighthouse > 90)
+- Supports multiple input scenarios: full handoff, partial specs, requirements only, or direct prompts
 
 ## Prerequisites
 
@@ -98,17 +99,21 @@ Claude Code will automatically invoke the Nexus agent when appropriate.
 ## What Nexus Produces
 
 **Typical outputs:**
-- **React component files** - Production-ready .tsx/.jsx files
-- **Design token mappings** - CSS variables or design system config
-- **Component documentation** - Usage guidelines and props documentation
-- **Implementation notes** - Recommendations for integration
+- **Web prototype files** - Functional HTML/CSS/JS files
+- **Figma UI files** - Generated Figma designs with proper node structure
+- **Implementation review reports** - Technical feasibility assessments
+- **Accessibility audit results** - WCAG compliance validation
+- **Design decision logs** - Documentation of autonomous choices made
+- **Performance analysis** - Lighthouse scores and optimization recommendations
 
 ## Important Notes
 
-- Nexus follows your project's design system conventions
-- For Figma files, ensure proper access permissions
-- Generated code should be reviewed before production deployment
-- Nexus integrates with Figma MCP tools for design extraction
+- Nexus GENERATES web prototypes from requirements (HTML/CSS/JS, not React by default)
+- Nexus CREATES Figma designs from code, it doesn't read Figma files
+- Can work with minimal input - makes autonomous design decisions when needed
+- Follows WCAG 2.1 AA accessibility standards and targets Lighthouse score > 90
+- Generated prototypes should be reviewed before production deployment
+- Integrates with BMAD UX Designer agent for collaborative workflows
 ```
 
 Save this content to: `~/.claude/skills/nexus/SKILL.md`
@@ -131,8 +136,8 @@ claude
 # In the chat, type:
 /nexus
 
-# Or simply describe a design-to-code task:
-"Can you help me convert a Figma design to React code?"
+# Or simply describe a requirement-to-prototype task:
+"Build a user registration form with email validation"
 ```
 
 If the installation is successful, you should see Nexus mentioned in the available skills list.
@@ -152,11 +157,12 @@ Nexus, [your request here]
 ### Method 2: Natural Language
 
 Just describe what you need:
-- "Convert this Figma design to React code: [URL]"
-- "Generate a prototype from: [Website URL]"
-- "Build the login form component from our design system"
+- "Build a user registration form with email and password validation"
+- "Create a pricing table prototype with three tiers and monthly/annual toggle"
+- "Generate a dashboard layout from this wireframe: [file path]"
+- "Build a login page with accessibility features"
 
-Claude Code will automatically invoke Nexus when it detects a design-to-code task.
+Claude Code will automatically invoke Nexus when it detects a requirement-to-prototype task.
 
 ### Method 3: Terminal Command (Alternative)
 
