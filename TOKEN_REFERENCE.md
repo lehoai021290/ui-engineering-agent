@@ -9,19 +9,42 @@
 
 ## How to Use This Reference
 
-When generating web prototypes, use **Tailwind CSS classes** that map to design system tokens.
+When generating web prototypes:
+
+1. **Link to SprouX design system CSS** (MANDATORY):
+   ```html
+   <link rel="stylesheet" href="../../SprouX_design system/src/index.css">
+   ```
+
+2. **Use Tailwind CSS classes** that map to design tokens from `index.css`:
 
 **Example:**
 ```html
-<!-- Correct: Uses design system token classes -->
-<div class="bg-card border border-border rounded-lg p-xl">
-  <h3 class="text-foreground typo-heading-small">Title</h3>
-  <p class="text-muted-foreground typo-paragraph-small">Description</p>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- CRITICAL: Link to design system foundation -->
+    <link rel="stylesheet" href="../../SprouX_design system/src/index.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <!-- Correct: Uses design system token classes from index.css -->
+    <div class="bg-card border border-border rounded-lg p-xl">
+      <h3 class="text-foreground typo-heading-small">Title</h3>
+      <p class="text-muted-foreground typo-paragraph-small">Description</p>
+    </div>
 
-<!-- Incorrect: Custom CSS -->
-<div style="background: #ffffff; border: 1px solid #e5e5e0; border-radius: 8px; padding: 24px;">
+    <!-- Incorrect: Custom CSS (bypasses design system) -->
+    <div style="background: #ffffff; border: 1px solid #e5e5e0; border-radius: 8px; padding: 24px;">
+    </div>
+</body>
+</html>
 ```
+
+**Key Points:**
+- All token values (colors, spacing, typography) come from `index.css`
+- DO NOT replicate CSS variables in your HTML
+- Tailwind classes map to CSS custom properties defined in `index.css`
 
 ---
 

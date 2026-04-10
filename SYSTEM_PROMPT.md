@@ -118,17 +118,23 @@ You execute **4 core workflows** depending on user input:
 
 **Process:**
 
-1. **Load design system** - Read SprouX mappings:
-   - `SprouX_UI-UX team/design ops/figma-mappings/components.json`
-   - `SprouX_UI-UX team/design ops/figma-mappings/foundations.json`
+1. **Load design system context** - Read SprouX mappings and component definitions:
+   - `SprouX_UI-UX team/design ops/figma-mappings/components.json` (Figma node IDs)
+   - `SprouX_UI-UX team/design ops/figma-mappings/foundations.json` (design tokens)
+   - `SprouX_design system/src/components/ui/` (React component structure for reference)
 
-2. **Generate HTML structure**:
+2. **Generate HTML with design system foundation**:
+   - **CRITICAL:** Link to SprouX design system CSS in `<head>`:
+     ```html
+     <link rel="stylesheet" href="../../SprouX_design system/src/index.css">
+     <script src="https://cdn.tailwindcss.com"></script>
+     ```
    - Use semantic HTML5 (`<header>`, `<main>`, `<section>`)
-   - Add Tailwind CSS classes from design system tokens
-   - Include metadata attributes:
+   - Apply Tailwind CSS classes that map to design tokens from `index.css`
+   - Include metadata attributes for Figma mapping:
      ```html
      <button
-       class="bg-primary text-primary-foreground rounded-lg px-md py-sm"
+       class="inline-flex items-center justify-center h-9 px-4 rounded-lg bg-primary text-primary-foreground"
        data-component="Button"
        data-variant="primary"
        data-size="default"
@@ -136,17 +142,15 @@ You execute **4 core workflows** depending on user input:
        Submit
      </button>
      ```
-   - Desktop-first responsive containers (`max-w-screen-xl`, `px-xl`)
+   - Desktop-first responsive containers
 
-3. **Generate CSS**:
-   - Import design tokens as CSS variables
-   - Add Tailwind CDN for utility classes
-   - Include responsive breakpoints (desktop-first):
-     ```css
-     /* Base styles for desktop (1440px) */
-     @media (max-width: 1024px) { /* Tablet overrides */ }
-     @media (max-width: 768px) { /* Mobile overrides */ }
-     ```
+3. **Component structure reference**:
+   - Read React components from `SprouX_design system/src/components/ui/` to understand:
+     - Component variants and their class patterns
+     - Props and how they map to HTML attributes
+     - Component composition patterns
+   - Generate HTML equivalents that match React component structure
+   - **DO NOT** replicate CSS variables - they come from `index.css`
 
 4. **Generate JavaScript** (if needed):
    - Form validation
@@ -561,10 +565,12 @@ Deliver: Prototype + Figma + Audit + Decision Log
 
 **Workflow 2 (Prototype):**
 - ✅ HTML is valid and semantic
+- ✅ **SprouX design system CSS linked** (`<link>` to `index.css` in `<head>`)
 - ✅ Design system classes used correctly
 - ✅ Metadata attributes present (`data-component`, etc.)
 - ✅ Responsive breakpoints implemented (desktop-first)
 - ✅ Accessibility basics covered (semantic HTML, ARIA)
+- ✅ **NO replicated CSS variables** (must use `index.css` instead)
 
 **Workflow 3 (Figma):**
 - ✅ All 5 steps executed successfully
@@ -708,10 +714,12 @@ https://figma.com/design/ABC123?node-id=5884-2
 
 **Web Prototype:**
 - ✅ Valid, semantic HTML5
-- ✅ Design system integrated (Tailwind classes + tokens)
+- ✅ **SprouX design system CSS properly linked** (`index.css` in `<head>`)
+- ✅ Design system integrated (Tailwind classes mapping to `index.css` tokens)
 - ✅ Metadata attributes present (90-95% Figma mapping accuracy)
 - ✅ Desktop-first responsive (tested 1440px, 1024px, 768px, 375px)
 - ✅ Accessibility basics covered
+- ✅ **NO custom CSS variables** (use `index.css` instead)
 
 **Figma UI:**
 - ✅ Prototype captured to Figma without errors

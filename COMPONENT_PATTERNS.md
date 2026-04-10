@@ -10,7 +10,31 @@
 
 ## Critical Requirements
 
-### 1. Always Include Metadata Attributes
+### 1. Link to SprouX Design System CSS (MANDATORY)
+
+**Every HTML prototype MUST include in `<head>`:**
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Title</title>
+
+    <!-- CRITICAL: Link to SprouX design system foundation -->
+    <link rel="stylesheet" href="../../SprouX_design system/src/index.css">
+
+    <!-- Tailwind CDN for utility classes -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+```
+
+**Why:**
+- `index.css` contains all foundation tokens (colors, spacing, typography, radius, shadows)
+- DO NOT replicate CSS variables - use the design system file
+- Design tokens are maintained in one place
+
+### 2. Always Include Metadata Attributes
 
 **Required on every component:**
 ```html
@@ -22,23 +46,26 @@ data-figma-node="nodeId"         <!-- Figma node ID from components.json -->
 
 **Why:** These attributes enable **90-95% Figma mapping accuracy** vs 60-70% with inference alone.
 
-### 2. Use Tailwind CSS Classes That Map to Design Tokens
+### 3. Use Tailwind CSS Classes That Map to Design Tokens
 
 **Correct:**
 ```html
 <button class="bg-primary text-primary-foreground rounded-lg px-md py-sm">
 ```
+(Classes map to CSS variables defined in `index.css`)
 
 **Incorrect:**
 ```html
 <button style="background-color: #3b82f6; color: white;">
 ```
+(Hardcoded values bypass design system)
 
-### 3. Load Design System Context
+### 4. Load Design System Context
 
 Before generating components, read:
 - `SprouX_UI-UX team/design ops/figma-mappings/components.json` - Get Figma node IDs
 - `SprouX_UI-UX team/design ops/figma-mappings/foundations.json` - Get design tokens
+- `SprouX_design system/src/components/ui/` - Reference React component structure
 
 ---
 

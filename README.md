@@ -63,22 +63,38 @@ Nexus executes **4 core workflows** documented in `SYSTEM_PROMPT.md`:
 **Input:** Structured requirements (from Workflow 1)
 **Output:** HTML/CSS/JS files using SprouX design system
 
+**Critical Requirements:**
+- ✅ **Links to `SprouX_design system/src/index.css`** (foundation tokens)
+- ✅ **References React components** from `src/components/ui/` (structure patterns)
+- ✅ **Uses Tailwind classes** that map to design tokens
+- ✅ **NO replicated CSS variables** (must use `index.css`)
+
 **Features:**
-- Tailwind CSS classes mapped to design tokens
+- Tailwind CSS classes mapped to design tokens from `index.css`
 - Metadata attributes for 90-95% Figma mapping accuracy
 - Desktop-first responsive design
 - Accessibility attributes (ARIA, semantic HTML)
 
 **Example Output:**
 ```html
-<button
-  class="inline-flex items-center justify-center h-size-md px-md gap-xs rounded-lg bg-primary text-primary-foreground typo-paragraph-small-semibold"
-  data-component="Button"
-  data-variant="primary"
-  data-size="default"
-  data-figma-node="9:1071">
-  Submit
-</button>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- CRITICAL: Link to SprouX design system -->
+    <link rel="stylesheet" href="../../SprouX_design system/src/index.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <button
+      class="inline-flex items-center justify-center h-9 px-4 rounded-lg bg-primary text-primary-foreground"
+      data-component="Button"
+      data-variant="primary"
+      data-size="default"
+      data-figma-node="9:1071">
+      Submit
+    </button>
+</body>
+</html>
 ```
 
 ---
