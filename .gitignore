@@ -34,3 +34,6 @@ Thumbs.db
 outputs/
 reports/
 *.tmp
+
+# Internal notes (not for remote)
+LESSONS_LEARNED.md

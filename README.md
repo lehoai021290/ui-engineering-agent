@@ -1,482 +1,437 @@
 # Nexus - UI Engineering Agent
 
-🔷 **"The nexus of design and code"**
+**Version:** 3.0.0
+**Type:** Pure Claude Code Agent
+**Status:** ✅ Active
+**Last Updated:** 2026-04-10
 
-Intelligent agent for design-to-code workflows with **zero dependency conflicts**. Transforms design specifications, requirements, or prompts into web prototypes and Figma UI.
+---
 
-> **Note:** Refactored to remove CrewAI dependency. See `REFACTORING_NOTES.md` for details.
+## Overview
 
-## Features
+**Nexus** is a specialized Claude Code subagent that transforms design specifications into functional web prototypes and Figma designs using the SprouX design system.
 
-- ✅ **Flexible Input Handling** - Works with wireframes, design specs, requirements, or simple prompts
-- ✅ **Adaptive Workflows** - Automatically selects workflow based on input completeness
-- ✅ **Multi-Agent Collaboration** - Integrates with BMAD UX Designer agent
-- ✅ **Autonomous Design Decisions** - Makes informed decisions when specifications are incomplete
-- ✅ **Web Prototype Generation** - Creates functional HTML/CSS/JS prototypes
-- ✅ **Figma Integration** - Generates Figma UI with design system mapping
+### Key Capabilities
+
+- ✅ **Design-to-Code Translation** - Converts specs, wireframes, or prompts into prototypes
+- ✅ **Design System Integration** - Uses SprouX components and tokens (53 components, 169 tokens)
+- ✅ **Figma UI Generation** - Captures prototypes to Figma with automated component mapping
 - ✅ **Accessibility Validation** - WCAG 2.1 AA compliance checking
-- ✅ **Comprehensive Documentation** - Detailed implementation reviews with autonomous decisions logged
+- ✅ **Autonomous Decision-Making** - Makes informed design decisions when specs are incomplete
+- ✅ **Desktop-First Responsive** - Optimized for 1440px → 375px breakpoints
 
-## Architecture
+---
 
-**Simplified, lightweight design with direct skill calls:**
+## How It Works
 
-```
-CLI (click)
-  ↓
-Orchestrator (Python)
-  ↓
-Skills (standalone modules)
-  ├── Design Spec Parser
-  ├── Web Prototype Generation
-  ├── Figma UI Generation (→ Figma MCP)
-  └── Accessibility Checker
-  ↓
-BMAD Integration (optional)
-  ├── Handoff Detection
-  ├── Artifact Exchange
-  └── Collaboration Protocol
+Nexus operates as a **Claude Code subagent** invoked via the Task tool:
+
+### Invocation
+
+```markdown
+When the user mentions:
+- "Generate web prototype"
+- "Create Figma design from prototype"
+- "Build UI from wireframes"
+- "Generate dashboard from requirements"
+
+Use the Task tool with subagent_type="ui-engineering"
 ```
 
-**Input Modes:**
-- Full Handoff (Wireframes + Specs)
-- Partial Handoff (Specs Only)
-- Requirements Only
-- Direct Prompts
+### What Happens
 
-## Installation
+1. Claude Code launches Nexus as a subagent
+2. Nexus reads `SYSTEM_PROMPT.md` for workflow instructions
+3. Executes the appropriate workflow (Parse → Prototype → Figma → Validate)
+4. Returns results to the main Claude Code session
 
-### Prerequisites
-
-- Python 3.9+
-- Anthropic API key (for Claude)
-- Git
-
-### Setup
-
-```bash
-# Navigate to agent directory
-cd .claude/agents/ui-engineering
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Set up environment variables
-export ANTHROPIC_API_KEY="your-api-key"
-```
-
-### Requirements
-
-Create `requirements.txt`:
-
-```txt
-crewai==0.28.0
-crewai-tools==0.2.0
-langchain==0.1.0
-langchain-anthropic==0.1.0
-anthropic==0.18.0
-pyyaml==6.0
-click==8.1.0
-```
-
-## Usage
-
-### Command Line Interface
-
-The agent provides a comprehensive CLI for various operations:
-
-```bash
-# Make CLI executable
-chmod +x cli.py
-
-# Show help
-python cli.py --help
-```
-
-### Common Commands
-
-#### 1. Watch for BMAD Handoffs (Automatic Mode)
-
-```bash
-python cli.py watch
-
-# With custom interval
-python cli.py watch --interval 60
-```
-
-Monitors `_bmad-output/` for completed designs from UX Designer agent and automatically generates prototypes.
-
-#### 2. Manual Implementation
-
-```bash
-python cli.py implement _bmad-output/ux-design/login-flow.md
-```
-
-Generates prototype and Figma UI from a specific design specification file.
-
-#### 3. Quick Generation (Prompt-Based)
-
-```bash
-python cli.py generate "Build a login page with email and password"
-
-python cli.py generate "Create a product dashboard with metrics and charts"
-```
-
-Generates complete prototype from a simple text description. Makes autonomous design decisions.
-
-#### 4. HTML to Figma Conversion
-
-```bash
-python cli.py to-figma prototypes/dashboard.html
-```
-
-Converts an existing HTML prototype to Figma UI.
-
-#### 5. Check Workflow Status
-
-```bash
-python cli.py status
-```
-
-Shows current BMAD workflow status and any pending handoffs.
-
-#### 6. Request Clarification
-
-```bash
-python cli.py clarify \
-  -q "Should we use modal or inline form?" \
-  -q "What's the error state design?" \
-  -c "Working on login flow"
-```
-
-Sends questions to UX Designer agent.
-
-### Development Commands
-
-```bash
-# Parse and analyze design spec
-python cli.py dev parse design-spec.md
-
-# Run accessibility audit
-python cli.py dev audit prototype.html
-
-# Show agent info
-python cli.py info
-```
+---
 
 ## Workflows
 
-### Workflow 1: Full Handoff (Complete Design Specs)
+Nexus executes **4 core workflows** documented in `SYSTEM_PROMPT.md`:
 
-**Input**: Wireframes + Design Specifications + User Flows
+### 1. Parse Requirements
+**Input:** Design specs, wireframes, requirements, or prompts
+**Output:** Structured requirements with component list and layout
 
-**Process**:
-1. Parse design specifications
-2. Generate web prototype following wireframes
-3. Generate Figma UI
-4. Validate accessibility
-5. Generate implementation review
+**Use when:** User provides incomplete or unstructured input
 
-**Use Case**: When UX Designer provides complete design package
+---
 
-### Workflow 2: Partial Handoff (Specs Without Wireframes)
+### 2. Generate Web Prototype
+**Input:** Structured requirements (from Workflow 1)
+**Output:** HTML/CSS/JS files using SprouX design system
 
-**Input**: Design Specifications + Component Requirements (no wireframes)
+**Features:**
+- Tailwind CSS classes mapped to design tokens
+- Metadata attributes for 90-95% Figma mapping accuracy
+- Desktop-first responsive design
+- Accessibility attributes (ARIA, semantic HTML)
 
-**Process**:
-1. Parse requirements and components
-2. Make autonomous layout decisions
-3. Generate web prototype with inferred structure
-4. Generate Figma UI
-5. Validate accessibility
-6. Document autonomous decisions in review
-
-**Use Case**: When UX Designer provides specs but no visual wireframes
-
-### Workflow 3: Autonomous Generation (Requirements Only)
-
-**Input**: User Requirements or User Stories
-
-**Process**:
-1. Parse requirements
-2. Infer all UI components
-3. Make complete autonomous design decisions
-4. Generate web prototype
-5. Generate Figma UI
-6. Validate accessibility
-7. Comprehensive documentation of ALL decisions
-
-**Use Case**: No UX Designer involved, or rapid prototyping from requirements
-
-### Workflow 4: Quick Prompt (Minimal Input)
-
-**Input**: Simple text prompt
-
-**Process**:
-1. Interpret prompt
-2. Generate complete design autonomously
-3. Create prototype and Figma UI
-4. Document decisions
-
-**Use Case**: Rapid exploration, proof-of-concept, user testing
-
-## Input Formats
-
-### Markdown Design Spec
-
-```markdown
-## User Flow
-- User navigates to login page
-- User enters email and password
-- User clicks submit
-- System validates and redirects
-
-## Component Requirements
-- Use Input (variant: default) for email field
-- Use Input (variant: password) for password field
-- Use Button (variant: primary) for submit
-- Use Link for "Forgot password"
-
-## Interactions
-- Form validation on blur
-- Error messages for invalid input
-- Loading state on submit
-
-## Accessibility
-- WCAG 2.1 AA compliance
-- Keyboard navigation support
-- Screen reader announcements
+**Example Output:**
+```html
+<button
+  class="inline-flex items-center justify-center h-size-md px-md gap-xs rounded-lg bg-primary text-primary-foreground typo-paragraph-small-semibold"
+  data-component="Button"
+  data-variant="primary"
+  data-size="default"
+  data-figma-node="9:1071">
+  Submit
+</button>
 ```
 
-### Requirements Text
+---
+
+### 3. Generate Figma UI
+**Input:** Web prototype (HTML file)
+**Output:** Figma design with component mapping
+
+**5-Step Process:**
+1. Capture web prototype to Figma
+2. Load design system mappings (`components.json`, `foundations.json`)
+3. Replace generic layers with SprouX component instances
+4. Apply foundation tokens (colors, spacing, typography)
+5. Generate human-friendly mapping report (terminal output)
+
+**Automation:** ~80% automated, ~20% manual refinement needed
+
+---
+
+### 4. Validate Accessibility
+**Input:** Web prototype
+**Output:** WCAG 2.1 AA compliance report
+
+**Checks:**
+- Semantic HTML structure
+- ARIA attributes
+- Color contrast (4.5:1 for text, 3:1 for UI)
+- Keyboard navigation
+- Form accessibility
+
+---
+
+## Architecture
+
+### Pure Claude Code Agent
 
 ```
-User Story: As a user, I want to log in with email and password
-
-Acceptance Criteria:
-- Email input with validation
-- Password input (masked)
-- Remember me checkbox
-- Forgot password link
-- Submit button
-- Error handling
+User Request
+    ↓
+Claude Code (Main Session)
+    ↓
+Task Tool (subagent_type="ui-engineering")
+    ↓
+Nexus Subagent
+    ├─ Reads: SYSTEM_PROMPT.md (workflow instructions)
+    ├─ Reads: COMPONENT_PATTERNS.md (component HTML patterns)
+    ├─ Reads: TOKEN_REFERENCE.md (design token reference)
+    ├─ Loads: figma-mappings/*.json (design system data)
+    └─ Executes: Workflows (Parse → Prototype → Figma → Validate)
+    ↓
+Returns Results to Main Session
 ```
 
-### Direct Prompt
+**No Python Dependencies** - Pure prompt-based generation using MCP tools
 
+---
+
+## Files & Documentation
+
+### Core Files
+
+| File | Purpose |
+|------|---------|
+| `SYSTEM_PROMPT.md` | Complete workflow instructions (loaded by Claude Code) |
+| `COMPONENT_PATTERNS.md` | HTML patterns for all 53 SprouX components |
+| `TOKEN_REFERENCE.md` | Design token reference (169 tokens) |
+| `AGENT.md` | Agent metadata and capabilities |
+| `LESSONS_LEARNED.md` | Internal notes and patterns |
+| `README.md` | This file - User guide |
+
+### Templates
+
+| File | Purpose |
+|------|---------|
+| `templates/implementation_review.md` | Output template for implementation reviews |
+
+### Reference Files (Not Executed)
+
+| Directory | Purpose |
+|-----------|---------|
+| `skills/` | Python reference implementations (not executed by agent) |
+| `tools/` | Python utility references (not executed by agent) |
+
+**Note:** Python files in `skills/` and `tools/` are **reference documentation only**. Nexus doesn't execute Python code - all logic is implemented in SYSTEM_PROMPT.md using prompt-based instructions.
+
+---
+
+## Design System Integration
+
+### SprouX Design System
+
+**Location:** `SprouX_UI-UX team/design ops/figma-mappings/`
+
+**Components:**
+- **Total:** 53 mapped components
+- **Categories:** Core (11), Common (25), Specialized (10), Utility (7)
+- **Figma Library:** `ihKZCnJS2UrsQzpzEFYI4u` ([SprouX - DS] Foundation & Component)
+
+**Foundation Tokens:**
+- **Colors:** 73 tokens (backgrounds, text, borders, focus rings)
+- **Typography:** 13 text styles
+- **Spacing:** 41 spacing tokens
+- **Sizing:** 23 sizing tokens
+- **Radius:** 11 border radius values
+- **Shadows:** 6 shadow definitions
+- **Total:** 169 tokens
+
+### Component Mapping
+
+**Automation Level:** ~80% automated
+
+**How It Works:**
+1. Metadata attributes in HTML (`data-component="Button"`, `data-figma-node="9:1071"`)
+2. Figma MCP tools import components from library
+3. Replace captured HTML elements with SprouX component instances
+4. Apply design tokens as Figma variables
+
+**Accuracy:** 90-95% with metadata attributes vs 60-70% without
+
+---
+
+## Quality Standards
+
+| Aspect | Standard |
+|--------|----------|
+| **Accessibility** | WCAG 2.1 AA compliance minimum |
+| **Performance** | Lighthouse score > 90 |
+| **Responsive** | Desktop-first (1440px → 1024px → 768px → 375px) |
+| **Design System** | 100% component mapping when available |
+| **Code Quality** | Semantic HTML, Tailwind CSS, ARIA attributes |
+
+---
+
+## Example Usage
+
+### Scenario: Generate Dashboard from Requirements
+
+**User Request:**
 ```
-"Build a product dashboard with sales metrics, charts, and recent activity"
-```
-
-## Integration with BMAD
-
-### Setup
-
-1. Ensure BMAD UX Designer agent is configured
-2. Verify `_bmad-output/` directory structure exists
-3. Run UI Engineering Agent in watch mode
-
-### Workflow Status File
-
-Location: `_bmad-output/workflow-status.yaml`
-
-```yaml
-design_phase:
-  status: completed
-  owner: ux-designer
-  output: _bmad-output/ux-design/onboarding-flow.md
-  completed_at: "2026-04-07T10:30:00"
-
-implementation_phase:
-  status: in_progress
-  owner: ui-engineering-agent
-  started_at: "2026-04-07T10:35:00"
-  artifacts:
-    prototype: _bmad-output/ui-engineering/prototypes/...
-    figma: https://figma.com/file/...
-    review_report: _bmad-output/ui-engineering/reports/review-*.md
-```
-
-### Handoff Protocol
-
-1. **UX Designer** completes design → Sets `design_phase.status = completed`
-2. **UI Engineering Agent** detects handoff → Sets `implementation_phase.status = in_progress`
-3. **Agent** generates artifacts → Updates `implementation_phase.artifacts`
-4. **Agent** completes work → Sets `implementation_phase.status = awaiting_review`
-5. **UX Designer** reviews → Provides feedback or approves
-
-## Output Artifacts
-
-### Generated Files
-
-```
-_bmad-output/ui-engineering/
-├── prototypes/
-│   └── 20260407-103500/
-│       ├── index.html
-│       ├── styles.css
-│       └── script.js
-├── figma/
-│   └── component-exports/
-├── reports/
-│   └── review-20260407-103500.md
-└── logs/
-```
-
-### Implementation Review Report
-
-Includes:
-- Input summary and completeness level
-- Autonomous design decisions (if any)
-- Deliverables (prototype + Figma links)
-- Technical notes and constraints
-- Accessibility audit results
-- Questions for UX review
-- Recommendations
-
-## Configuration
-
-Edit `config.yaml` to customize:
-
-```yaml
-agent:
-  model: "claude-sonnet-4.5"  # claude-opus-4.6, claude-haiku-4.5
-
-  quality_standards:
-    accessibility:
-      wcag_level: "AA"
-    performance:
-      lighthouse_threshold: 90
-
-  decision_making:
-    autonomous_scope:
-      - component_selection
-      - layout_structure
-      - spacing_and_sizing
-    consult_ux_designer_for:
-      - strategic_user_flows
-      - brand_visual_design
+Generate a creator dashboard with:
+- Stats cards showing campaigns, revenue, backers
+- Action feed with priority-based tasks
+- Recent activity timeline
+- Community panel
 ```
 
-## Development
+**What Nexus Does:**
 
-### Project Structure
+1. **Parse Requirements** (Workflow 1)
+   - Identifies components: Card, Badge, Button, Accordion
+   - Structures layout: Grid for stats, feed for actions, columns for bottom section
 
+2. **Generate Prototype** (Workflow 2)
+   - Creates HTML with Tailwind classes: `bg-card`, `border-border`, `rounded-lg`, `p-xl`
+   - Adds metadata: `data-component="Card"`, `data-figma-node="179:29234"`
+   - Implements desktop-first responsive: `grid-cols-4` → `grid-cols-2` → `grid-cols-1`
+
+3. **Generate Figma UI** (Workflow 3)
+   - Captures prototype to Figma
+   - Replaces generic cards with SprouX Card component instances
+   - Applies design tokens (colors, spacing, typography)
+   - Outputs mapping report to terminal
+
+4. **Validate Accessibility** (Workflow 4)
+   - Checks semantic HTML (`<main>`, `<section>`, `<article>`)
+   - Verifies ARIA labels on interactive elements
+   - Tests color contrast ratios
+   - Generates accessibility report
+
+**Deliverables:**
+- `index.html` - Prototype with design system integration
+- `styles.css` - Minimal custom CSS (Tailwind handles most)
+- Figma design URL with 80% automation coverage
+- Accessibility audit report
+
+---
+
+## Workflow Scenarios
+
+### Scenario A: Full Pipeline
 ```
-.claude/agents/ui-engineering/
-├── AGENT.md                    # Agent documentation
-├── README.md                   # This file
-├── config.yaml                 # Configuration
-├── agent.py                    # Core agent (CrewAI)
-├── orchestrator.py             # Workflow orchestration
-├── bmad_integration.py         # BMAD communication
-├── cli.py                      # Command-line interface
-├── skills/
-│   ├── figma_ui_generation.py
-│   └── web_prototype_generation.py
-├── tools/
-│   ├── design_spec_parser.py
-│   ├── handoff_generator.py
-│   └── accessibility_checker.py
-├── workflows/
-│   └── adaptive.py
-├── templates/
-│   └── implementation_review.md
-└── tests/
-    ├── test_agent.py
-    └── test_integration.py
-```
-
-### Running Tests
-
-```bash
-pytest tests/
-```
-
-### Adding New Skills
-
-1. Create skill file in `skills/`
-2. Implement skill function
-3. Add to `config.yaml`
-4. Update agent tools in `agent.py`
-
-## Examples
-
-### Example 1: Full Design Handoff
-
-```bash
-# UX Designer creates: _bmad-output/ux-design/checkout-flow.md
-
-# Start watch mode
-python cli.py watch
-
-# Agent automatically:
-# 1. Detects handoff
-# 2. Parses wireframes and specs
-# 3. Generates prototype
-# 4. Generates Figma UI
-# 5. Sends review to UX Designer
+User provides: Wireframes + Design Specs
+    ↓
+Parse Requirements → Generate Prototype → Generate Figma → Validate
+    ↓
+Deliver: Prototype + Figma + Audit
 ```
 
-### Example 2: Requirements-Only Implementation
-
-```bash
-python cli.py implement requirements.txt
-
-# Agent autonomously:
-# 1. Infers UI components
-# 2. Designs layout
-# 3. Generates prototype
-# 4. Generates Figma UI
-# 5. Documents all decisions
+### Scenario B: Prototype Only
+```
+User provides: Requirements or prompt
+    ↓
+Parse Requirements → Generate Prototype → Validate
+    ↓
+Deliver: Prototype + Audit
 ```
 
-### Example 3: Quick Exploration
-
-```bash
-python cli.py generate "Build a settings page with theme toggle and notification preferences"
-
-# Agent creates:
-# - Complete prototype in minutes
-# - Figma UI
-# - Accessibility validated
+### Scenario C: Figma from Existing Prototype
 ```
+User provides: HTML file path
+    ↓
+Generate Figma UI
+    ↓
+Deliver: Figma design
+```
+
+### Scenario D: Autonomous (Minimal Input)
+```
+User says: "Build a login page"
+    ↓
+Parse → Infer Components → Generate → Figma → Validate
+    ↓
+Deliver: Prototype + Figma + Audit + Decision Log
+```
+
+---
+
+## Quick Reference
+
+### Common Components
+
+See `COMPONENT_PATTERNS.md` for complete patterns.
+
+**Button:**
+```html
+<button class="inline-flex items-center justify-center h-size-md px-md gap-xs rounded-lg bg-primary text-primary-foreground typo-paragraph-small-semibold"
+        data-component="Button" data-variant="primary" data-size="default" data-figma-node="9:1071">
+  Text
+</button>
+```
+
+**Badge:**
+```html
+<span class="inline-flex items-center px-sm py-3xs rounded bg-success-subtle text-success-foreground typo-paragraph-mini-semibold"
+      data-component="Badge" data-variant="success" data-figma-node="19:6979">
+  Active
+</span>
+```
+
+**Card:**
+```html
+<div class="p-xl rounded-lg bg-card border border-border" data-component="Card" data-figma-node="179:29234">
+  <h3 class="typo-heading-small text-foreground mb-xs">Title</h3>
+  <p class="typo-paragraph-small text-muted-foreground">Content</p>
+</div>
+```
+
+### Common Tokens
+
+See `TOKEN_REFERENCE.md` for complete reference.
+
+**Colors:** `bg-primary`, `text-foreground`, `border-border`
+**Spacing:** `gap-md`, `px-xl`, `py-sm`
+**Typography:** `typo-heading-large`, `typo-paragraph-small`
+**Sizing:** `h-size-md`, `size-icon-lg`
+**Radius:** `rounded-lg`, `rounded-full`
+
+---
 
 ## Troubleshooting
 
-### Issue: Agent not detecting handoffs
+### Issue: Prototype doesn't use design system correctly
 
-**Solution**: Check `_bmad-output/workflow-status.yaml` exists and `design_phase.status = completed`
+**Symptoms:**
+- Custom CSS variables instead of Tailwind classes
+- No metadata attributes (`data-component`, etc.)
+- Hardcoded colors instead of semantic tokens
 
-### Issue: Prototype generation fails
+**Solution:**
+Ensure Nexus follows Workflow 2 in SYSTEM_PROMPT.md:
+1. Load design system mappings before generating
+2. Use Tailwind classes from TOKEN_REFERENCE.md
+3. Follow component patterns from COMPONENT_PATTERNS.md
+4. Add required metadata attributes
 
-**Solution**: Verify design spec is well-formatted. Use `python cli.py dev parse <file>` to debug.
+---
 
-### Issue: Figma integration errors
+### Issue: Low Figma mapping accuracy
 
-**Solution**: Check Figma API credentials and permissions. Verify `figma-ui-generation` skill is properly configured.
+**Symptoms:**
+- Less than 70% component replacement
+- Manual work exceeds 30%
 
-## Roadmap
+**Solution:**
+Check metadata attributes in generated HTML:
+```html
+<!-- Required attributes -->
+data-component="Button"      <!-- Component name -->
+data-variant="primary"       <!-- Variant -->
+data-size="default"          <!-- Size -->
+data-figma-node="9:1071"     <!-- Figma node ID -->
+```
 
-- [ ] Enhanced web prototype generation with LLM
-- [ ] Real Figma API integration
-- [ ] Interactive prototype previews
-- [ ] Design system sync
-- [ ] Multi-page prototype support
-- [ ] Version control for prototypes
-- [ ] Collaboration comments
+Without these attributes, mapping accuracy drops from 90-95% to 60-70%.
 
-## Version
+---
 
-**Current Version**: 1.0.0
-**Last Updated**: 2026-04-07
+### Issue: Accessibility validation fails
+
+**Common Issues:**
+- Missing ARIA labels on interactive elements
+- Low color contrast ratios
+- Non-semantic HTML (divs instead of buttons)
+- Missing form labels
+
+**Solution:**
+Follow accessibility guidelines in SYSTEM_PROMPT.md Workflow 4:
+- Use semantic HTML (`<button>`, `<input>`, `<label>`)
+- Add ARIA attributes (`aria-label`, `aria-describedby`)
+- Ensure 4.5:1 contrast for text, 3:1 for UI components
+- Link labels to inputs
+
+---
+
+## Version History
+
+### 3.0.0 (2026-04-10) - Pure Claude Code Refactoring
+- ✅ Removed Python execution dependencies
+- ✅ Converted logic to prompt-based workflows in SYSTEM_PROMPT.md
+- ✅ Created COMPONENT_PATTERNS.md (53 component patterns)
+- ✅ Created TOKEN_REFERENCE.md (169 token mappings)
+- ✅ Updated documentation to reflect pure Claude Code architecture
+- ✅ Deleted deprecated figma_ui_generation.py
+- ✅ Marked remaining Python files as reference only
+
+### 2.0.0 (2026-04-09) - Architecture Transition
+- Partial migration to Claude Code agent
+- Added SYSTEM_PROMPT.md
+- Deprecated figma_ui_generation.py
+
+### 1.3.0 (2026-04-08) - Metadata Enhancement
+- Added data-* attributes for 90-95% Figma mapping accuracy
+- Enhanced web prototype generation
+
+### 1.2.0 (2026-04-08) - Design System Integration
+- Integrated SprouX design system mappings
+- 100% consistency with design tokens
+
+---
 
 ## Support
 
-For issues and questions:
-- Check the [AGENT.md](./AGENT.md) documentation
-- Review workflow logs in `_bmad-output/ui-engineering/logs/`
-- Inspect implementation review reports
+**Documentation:**
+- `SYSTEM_PROMPT.md` - Complete workflow guide
+- `COMPONENT_PATTERNS.md` - Component HTML patterns
+- `TOKEN_REFERENCE.md` - Design token reference
+- `AGENT.md` - Agent capabilities
+
+**Design System:**
+- `SprouX_UI-UX team/design ops/figma-mappings/` - Component & token mappings
+- `SprouX_UI-UX team/design-system-component-usage-guidelines.md` - Usage guidelines
+
+---
 
 ## License
 
