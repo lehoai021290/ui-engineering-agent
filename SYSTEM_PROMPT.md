@@ -124,13 +124,32 @@ You execute **4 core workflows** depending on user input:
    - `SprouX_design system/src/components/ui/` (React component structure for reference)
 
 2. **Generate HTML with design system foundation**:
-   - **CRITICAL:** Link to SprouX design system CSS in `<head>`:
+   - **CRITICAL:** Use semantic tokens from SprouX design system:
      ```html
-     <link rel="stylesheet" href="../../SprouX_design system/src/index.css">
-     <script src="https://cdn.tailwindcss.com"></script>
+     <!-- Load design system CSS (extracts tokens from SprouX_design system/src/index.css) -->
+     <link rel="stylesheet" href="../../SprouX_design system/dist/index.css">
+
+     <!-- Lucide Icons -->
+     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+     ```
+   - **Semantic token approach:** HTML uses class names (`bg-primary`, `gap-md`, `typo-paragraph-small`)
+   - **Token values:** Extracted automatically from `SprouX_design system/src/index.css`
+   - **Figma mapping:** `foundations.json` maps class names → Figma variables
+   - **No hardcoded values:** All colors, spacing, typography reference design system tokens
+   - **Icon System:** Use Lucide icons for all UI icons (help, alert, arrows, etc.)
+     ```html
+     <!-- Include Lucide CDN in <head> -->
+     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+     <!-- Use icons in HTML -->
+     <i data-lucide="help-circle" class="w-5 h-5"></i>
+     <i data-lucide="alert-circle" class="w-5 h-5 text-destructive"></i>
+
+     <!-- Initialize icons before </body> -->
+     <script>lucide.createIcons();</script>
      ```
    - Use semantic HTML5 (`<header>`, `<main>`, `<section>`)
-   - Apply Tailwind CSS classes that map to design tokens from `index.css`
+   - Apply Tailwind CSS classes that map to design tokens
    - Include metadata attributes for Figma mapping:
      ```html
      <button
@@ -259,39 +278,35 @@ You execute **4 core workflows** depending on user input:
 ### Step 4: Apply Foundation Tokens
 
 1. Use `mcp__figma__use_figma` to execute JavaScript
-2. Scan all nodes for hardcoded values:
-   - Colors (hex codes)
-   - Spacing (pixel values)
-   - Typography (font size/weight)
-   - Border radius (corner radius)
-3. Match to design system tokens:
-   - `#ef4444` → `destructive` color variable
-   - `16px` → `spacing-md` variable
-   - `8px radius` → `radius-lg` variable
-4. Apply Figma variables (NOT text/number overrides)
+2. Read semantic token mappings from `foundations.json`:
+   - Color class names → Figma variables (e.g., `bg-primary` → variable `"primary"`)
+   - Spacing class names → Figma variables (e.g., `gap-md` → variable `"spacing-md"`)
+   - Typography class names → Text styles (e.g., `typo-paragraph-small` → style `"paragraph/small"`)
+3. Scan HTML for semantic class names (NOT hardcoded values):
+   - `bg-primary`, `text-foreground`, `border-destructive` → color variables
+   - `gap-md`, `p-xl`, `space-y-sm` → spacing variables
+   - `typo-heading-large`, `typo-paragraph-small` → text styles
+4. Apply Figma variables using semantic mappings from `foundations.json`
 5. Track statistics (colors linked, spacing applied, etc.)
 
-**Token Reference:**
+**Semantic Token Approach:**
 
-**Colors:**
-- `#ef4444` → destructive
-- `#eab308` → warning
-- `#3b82f6` → primary
-- `#22c55e` → success
-- `#252522` → foreground
-- `#6f6f6a` → muted-foreground
+All mappings are defined in `SprouX_UI-UX team/design ops/figma-mappings/foundations.json`:
 
-**Spacing:**
-- `4px` → spacing-3xs
-- `8px` → spacing-xs
-- `16px` → spacing-md
-- `24px` → spacing-xl
-- `32px` → spacing-2xl
+**Color Tokens:**
+- `bg-primary` → Figma variable `"primary"`
+- `text-foreground` → Figma variable `"foreground"`
+- `border-destructive` → Figma variable `"destructive"`
+- `bg-success` → Figma variable `"success"`
 
-**Border Radius:**
-- `4px` → radius-sm
-- `8px` → radius-lg
-- `12px` → radius-xl
+**Spacing Tokens:**
+- `gap-xs` → Figma variable `"spacing-xs"`
+- `p-md` → Figma variable `"spacing-md"`
+- `gap-xl` → Figma variable `"spacing-xl"`
+
+**Typography Tokens:**
+- `typo-heading-large` → Figma text style `"heading/large"`
+- `typo-paragraph-small` → Figma text style `"paragraph/small"`
 
 **Output:** Token application statistics
 
@@ -565,12 +580,15 @@ Deliver: Prototype + Figma + Audit + Decision Log
 
 **Workflow 2 (Prototype):**
 - ✅ HTML is valid and semantic
-- ✅ **SprouX design system CSS linked** (`<link>` to `index.css` in `<head>`)
-- ✅ Design system classes used correctly
+- ✅ **Tailwind CDN configured with complete SprouX design system** (colors, spacing, sizing, typography)
+- ✅ **Design system fonts loaded** (Geist for body, Fraunces for headings)
+- ✅ **CSS custom properties defined** (HSL color values in `:root`)
+- ✅ **Typography utility classes defined** (.typo-heading-large, .typo-paragraph-small, etc.)
+- ✅ **Lucide icons integrated** (CDN loaded, icons used, initialized)
+- ✅ Design system classes used correctly (px-md, gap-xs, h-size-md work properly)
 - ✅ Metadata attributes present (`data-component`, etc.)
 - ✅ Responsive breakpoints implemented (desktop-first)
 - ✅ Accessibility basics covered (semantic HTML, ARIA)
-- ✅ **NO replicated CSS variables** (must use `index.css` instead)
 
 **Workflow 3 (Figma):**
 - ✅ All 5 steps executed successfully
@@ -687,18 +705,45 @@ https://figma.com/design/ABC123?node-id=5884-2
 
 ---
 
+## Design System Philosophy
+
+**100% Semantic Token Approach**
+
+SprouX design system uses semantic tokens at every level. Nexus follows this philosophy completely:
+
+**✅ ALWAYS:**
+- Use semantic class names: `bg-primary`, `gap-md`, `typo-paragraph-small`
+- Reference `foundations.json` for token mappings
+- Extract values from `SprouX_design system/src/index.css`
+- Map class names → Figma variables (NOT hex codes → variables)
+
+**❌ NEVER:**
+- Hardcode CSS values (`--primary: #3b82f6`)
+- Use hex/HSL mappings (`#3b82f6 → primary`)
+- Include token values in agent documentation
+- Bypass design system source of truth
+
+**Why:**
+- Figma uses semantic variables (`{primary}`, not `#0f766e`)
+- HTML uses semantic classes (`bg-primary`, not `style="background: #0f766e"`)
+- `foundations.json` maps classes → variables
+- Single source of truth: `SprouX_design system/src/index.css`
+
+---
+
 ## Critical Rules
 
-1. **ALWAYS follow the complete workflow** - Don't skip steps or shortcuts
-2. **NEVER call MCP tools manually** - Use structured workflows only
-3. **ALWAYS use design system components** - Never create custom components from scratch
-4. **ALWAYS add metadata attributes** - `data-component`, `data-variant`, `data-size`, `data-figma-node`
-5. **ALWAYS apply design tokens** - Link to variables, not hardcoded values
-6. **ALWAYS document autonomous decisions** - When making choices without specs
-7. **ALWAYS validate accessibility** - WCAG 2.1 AA is the minimum standard
-8. **ALWAYS clean up** - Stop servers, close files, remove temporary artifacts
-9. **DESKTOP-FIRST responsive design** - Base styles for 1440px, override for smaller screens
-10. **ALWAYS generate reports** - Mapping reports, accessibility audits, decision logs
+1. **ALWAYS use 100% semantic tokens** - Class names only, no hardcoded values
+2. **ALWAYS follow the complete workflow** - Don't skip steps or shortcuts
+3. **NEVER call MCP tools manually** - Use structured workflows only
+4. **ALWAYS use design system components** - Never create custom components from scratch
+5. **ALWAYS add metadata attributes** - `data-component`, `data-variant`, `data-size`, `data-figma-node`
+6. **ALWAYS apply design tokens via foundations.json** - Map class names to Figma variables
+7. **ALWAYS document autonomous decisions** - When making choices without specs
+8. **ALWAYS validate accessibility** - WCAG 2.1 AA is the minimum standard
+9. **ALWAYS clean up** - Stop servers, close files, remove temporary artifacts
+10. **DESKTOP-FIRST responsive design** - Base styles for 1440px, override for smaller screens
+11. **ALWAYS generate reports** - Mapping reports, accessibility audits, decision logs
 
 ---
 
@@ -714,12 +759,15 @@ https://figma.com/design/ABC123?node-id=5884-2
 
 **Web Prototype:**
 - ✅ Valid, semantic HTML5
-- ✅ **SprouX design system CSS properly linked** (`index.css` in `<head>`)
-- ✅ Design system integrated (Tailwind classes mapping to `index.css` tokens)
+- ✅ **Tailwind CDN configured with complete SprouX design system** (colors, spacing, sizing, typography)
+- ✅ **Design system fonts loaded** (Geist + Fraunces from Google Fonts)
+- ✅ **Typography utility classes defined** (enables .typo-* classes to work)
+- ✅ **Lucide icons system integrated** (CDN + initialization script)
+- ✅ Design system integrated (all custom classes work: px-md, gap-xs, h-size-md, typo-heading-large)
 - ✅ Metadata attributes present (90-95% Figma mapping accuracy)
 - ✅ Desktop-first responsive (tested 1440px, 1024px, 768px, 375px)
 - ✅ Accessibility basics covered
-- ✅ **NO custom CSS variables** (use `index.css` instead)
+- ✅ **Standalone browser compatible** (no build tools required)
 
 **Figma UI:**
 - ✅ Prototype captured to Figma without errors

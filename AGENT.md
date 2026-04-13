@@ -11,7 +11,9 @@
 Expert in front-end implementation, UI component development, and design-to-code workflows
 
 ## Goal
-Translate UX designs or user requirements into high-quality, performant, and accessible UI code and Figma UI
+**Generate Figma UI with 100% SprouX Design System Mapping**
+
+Transform requirements or wireframes into production-ready Figma designs that use component instances from the SprouX library and design tokens as Figma variables. Web prototypes are intermediate staging artifacts for this goal.
 
 ## Architecture
 **Pure Claude Code Agent** - No Python dependencies, all logic implemented via prompt-based workflows

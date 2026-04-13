@@ -11,40 +11,53 @@
 
 When generating web prototypes:
 
-1. **Link to SprouX design system CSS** (MANDATORY):
-   ```html
-   <link rel="stylesheet" href="../../SprouX_design system/src/index.css">
-   ```
+1. **Configure Tailwind CDN with complete SprouX design system** (MANDATORY):
+   - See COMPONENT_PATTERNS.md for complete `<head>` setup
+   - Includes: Tailwind config (colors, spacing, sizing, typography), CSS custom properties, fonts, Lucide icons
 
-2. **Use Tailwind CSS classes** that map to design tokens from `index.css`:
+2. **Use design system classes** - All custom classes now work:
+   - Spacing: `px-md`, `gap-xs`, `p-2xl`
+   - Sizing: `h-size-md`, `w-size-lg`
+   - Typography: `typo-heading-large`, `typo-paragraph-small`
+   - Colors: `bg-primary`, `text-foreground`
+
+3. **Use Lucide icons** for all UI icons (not emojis or symbols)
 
 **Example:**
 ```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- CRITICAL: Link to design system foundation -->
-    <link rel="stylesheet" href="../../SprouX_design system/src/index.css">
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SprouX Prototype</title>
+
+    <!-- Design system CSS (source: SprouX_design system/src/index.css) -->
+    <link rel="stylesheet" href="../../SprouX_design system/dist/index.css">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 </head>
 <body>
-    <!-- Correct: Uses design system token classes from index.css -->
+    <!-- Uses semantic tokens: bg-card, text-primary, gap-xs, typo-heading-large -->
     <div class="bg-card border border-border rounded-lg p-xl">
-      <h3 class="text-foreground typo-heading-small">Title</h3>
-      <p class="text-muted-foreground typo-paragraph-small">Description</p>
+      <div class="flex items-center gap-xs mb-md">
+        <i data-lucide="check-circle" class="w-5 h-5 text-primary"></i>
+        <h3 class="typo-heading-large">Success</h3>
+      </div>
+      <p class="typo-paragraph-small text-muted-foreground">All systems operational</p>
     </div>
 
-    <!-- Incorrect: Custom CSS (bypasses design system) -->
-    <div style="background: #ffffff; border: 1px solid #e5e5e0; border-radius: 8px; padding: 24px;">
-    </div>
+    <script>lucide.createIcons();</script>
 </body>
 </html>
 ```
 
 **Key Points:**
-- All token values (colors, spacing, typography) come from `index.css`
-- DO NOT replicate CSS variables in your HTML
-- Tailwind classes map to CSS custom properties defined in `index.css`
+- **Semantic tokens only**: Uses class names (`bg-primary`, `gap-md`, `typo-paragraph-small`)
+- **No hardcoded values**: All tokens extracted from `SprouX_design system/src/index.css`
+- **Figma mapping**: `foundations.json` maps class names → Figma variables
+- **Design system source of truth**: CSS file is the single source for all token values
 
 ---
 

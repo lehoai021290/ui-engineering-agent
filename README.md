@@ -64,13 +64,17 @@ Nexus executes **4 core workflows** documented in `SYSTEM_PROMPT.md`:
 **Output:** HTML/CSS/JS files using SprouX design system
 
 **Critical Requirements:**
-- ✅ **Links to `SprouX_design system/src/index.css`** (foundation tokens)
+- ✅ **Tailwind CDN configured with complete SprouX design system** (colors, spacing, sizing, typography)
+- ✅ **Design system fonts loaded** (Geist for body, Fraunces for headings)
+- ✅ **CSS custom properties defined** (HSL color values)
+- ✅ **Typography utility classes defined** (.typo-heading-large, .typo-paragraph-small, etc.)
+- ✅ **Lucide icon system integrated** (professional icons, not emojis)
 - ✅ **References React components** from `src/components/ui/` (structure patterns)
-- ✅ **Uses Tailwind classes** that map to design tokens
-- ✅ **NO replicated CSS variables** (must use `index.css`)
+- ✅ **Standalone browser compatible** (no build tools required)
 
 **Features:**
-- Tailwind CSS classes mapped to design tokens from `index.css`
+- All custom design system classes work: px-md, gap-xs, h-size-md, typo-heading-large
+- Professional Lucide icons instead of emojis/symbols
 - Metadata attributes for 90-95% Figma mapping accuracy
 - Desktop-first responsive design
 - Accessibility attributes (ARIA, semantic HTML)
@@ -80,19 +84,55 @@ Nexus executes **4 core workflows** documented in `SYSTEM_PROMPT.md`:
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- CRITICAL: Link to SprouX design system -->
-    <link rel="stylesheet" href="../../SprouX_design system/src/index.css">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: 'hsl(var(--primary))',
+                        'primary-foreground': 'hsl(var(--primary-foreground))',
+                    },
+                    spacing: {
+                        'xs': '8px', 'md': '16px', 'xl': '24px'
+                    },
+                    height: {
+                        'size-md': '36px'
+                    },
+                    fontSize: {
+                        'heading-large': ['32px', { lineHeight: '1.2', fontWeight: '700' }]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap');
+        :root {
+            --primary: 217 91% 60%;
+            --primary-foreground: 0 0% 100%;
+        }
+        body { font-family: 'Geist', sans-serif; }
+        .typo-heading-large { font-size: 32px; line-height: 1.2; font-weight: 700; }
+    </style>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 </head>
 <body>
-    <button
-      class="inline-flex items-center justify-center h-9 px-4 rounded-lg bg-primary text-primary-foreground"
-      data-component="Button"
-      data-variant="primary"
-      data-size="default"
-      data-figma-node="9:1071">
-      Submit
-    </button>
+    <div class="p-xl">
+      <div class="flex items-center gap-xs mb-md">
+        <i data-lucide="check-circle" class="w-5 h-5 text-primary"></i>
+        <h1 class="typo-heading-large">Success</h1>
+      </div>
+      <button
+        class="h-size-md px-md rounded-lg bg-primary text-primary-foreground"
+        data-component="Button"
+        data-variant="primary"
+        data-size="default"
+        data-figma-node="9:1071">
+        Submit
+      </button>
+    </div>
+    <script>lucide.createIcons();</script>
 </body>
 </html>
 ```

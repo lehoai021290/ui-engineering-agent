@@ -10,7 +10,7 @@
 
 ## Critical Requirements
 
-### 1. Link to SprouX Design System CSS (MANDATORY)
+### 1. Configure Tailwind CDN with Complete SprouX Design System (MANDATORY)
 
 **Every HTML prototype MUST include in `<head>`:**
 ```html
@@ -21,20 +21,203 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Page Title</title>
 
-    <!-- CRITICAL: Link to SprouX design system foundation -->
-    <link rel="stylesheet" href="../../SprouX_design system/src/index.css">
-
-    <!-- Tailwind CDN for utility classes -->
+    <!-- CRITICAL: Tailwind CDN with complete SprouX design system -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        background: 'hsl(var(--background))',
+                        foreground: 'hsl(var(--foreground))',
+                        primary: 'hsl(var(--primary))',
+                        'primary-foreground': 'hsl(var(--primary-foreground))',
+                        secondary: 'hsl(var(--secondary))',
+                        'secondary-foreground': 'hsl(var(--secondary-foreground))',
+                        muted: 'hsl(var(--muted))',
+                        'muted-foreground': 'hsl(var(--muted-foreground))',
+                        destructive: 'hsl(var(--destructive))',
+                        'destructive-foreground': 'hsl(var(--destructive-foreground))',
+                        warning: 'hsl(var(--warning))',
+                        'warning-foreground': 'hsl(var(--warning-foreground))',
+                        success: 'hsl(var(--success))',
+                        'success-foreground': 'hsl(var(--success-foreground))',
+                        border: 'hsl(var(--border))',
+                        card: 'hsl(var(--card))',
+                        'card-foreground': 'hsl(var(--card-foreground))',
+                    },
+                    spacing: {
+                        '4xs': '2px',
+                        '3xs': '4px',
+                        '2xs': '6px',
+                        'xs': '8px',
+                        'sm': '12px',
+                        'md': '16px',
+                        'lg': '20px',
+                        'xl': '24px',
+                        '2xl': '32px',
+                        '3xl': '40px',
+                        '4xl': '48px',
+                        '5xl': '64px'
+                    },
+                    height: {
+                        'size-xs': '24px',
+                        'size-sm': '32px',
+                        'size-md': '36px',
+                        'size-lg': '40px',
+                        'size-xl': '48px'
+                    },
+                    width: {
+                        'size-xs': '24px',
+                        'size-sm': '32px',
+                        'size-md': '36px',
+                        'size-lg': '40px',
+                        'size-xl': '48px'
+                    },
+                    fontSize: {
+                        'heading-large': ['32px', { lineHeight: '1.2', fontWeight: '700' }],
+                        'heading-medium': ['24px', { lineHeight: '1.3', fontWeight: '600' }],
+                        'heading-small': ['20px', { lineHeight: '1.4', fontWeight: '600' }],
+                        'heading-xs': ['18px', { lineHeight: '1.4', fontWeight: '600' }],
+                        'paragraph-large': ['18px', { lineHeight: '1.5', fontWeight: '400' }],
+                        'paragraph-large-semibold': ['18px', { lineHeight: '1.5', fontWeight: '600' }],
+                        'paragraph-base': ['16px', { lineHeight: '1.5', fontWeight: '400' }],
+                        'paragraph-base-medium': ['16px', { lineHeight: '1.5', fontWeight: '500' }],
+                        'paragraph-small': ['14px', { lineHeight: '1.5', fontWeight: '400' }],
+                        'paragraph-small-semibold': ['14px', { lineHeight: '1.5', fontWeight: '600' }],
+                        'paragraph-mini': ['12px', { lineHeight: '1.4', fontWeight: '400' }],
+                        'paragraph-mini-semibold': ['12px', { lineHeight: '1.4', fontWeight: '600' }]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap');
+
+        :root {
+            --background: 0 0% 100%;
+            --foreground: 40 6% 15%;
+            --primary: 217 91% 60%;
+            --primary-foreground: 0 0% 100%;
+            --secondary: 40 6% 96%;
+            --secondary-foreground: 40 6% 15%;
+            --muted: 40 6% 96%;
+            --muted-foreground: 40 4% 44%;
+            --destructive: 0 84% 60%;
+            --destructive-foreground: 0 0% 100%;
+            --warning: 43 96% 56%;
+            --warning-foreground: 0 0% 100%;
+            --success: 142 76% 47%;
+            --success-foreground: 0 0% 100%;
+            --border: 40 6% 90%;
+            --card: 0 0% 100%;
+            --card-foreground: 40 6% 15%;
+        }
+
+        body {
+            font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Fraunces', serif;
+        }
+
+        /* Typography utility classes */
+        .typo-heading-large { font-size: 32px; line-height: 1.2; font-weight: 700; font-family: 'Fraunces', serif; }
+        .typo-heading-medium { font-size: 24px; line-height: 1.3; font-weight: 600; font-family: 'Fraunces', serif; }
+        .typo-heading-small { font-size: 20px; line-height: 1.4; font-weight: 600; font-family: 'Fraunces', serif; }
+        .typo-heading-xs { font-size: 18px; line-height: 1.4; font-weight: 600; font-family: 'Fraunces', serif; }
+        .typo-paragraph-large-semibold { font-size: 18px; line-height: 1.5; font-weight: 600; }
+        .typo-paragraph-base-medium { font-size: 16px; line-height: 1.5; font-weight: 500; }
+        .typo-paragraph-small { font-size: 14px; line-height: 1.5; font-weight: 400; }
+        .typo-paragraph-small-semibold { font-size: 14px; line-height: 1.5; font-weight: 600; }
+        .typo-paragraph-mini { font-size: 12px; line-height: 1.4; font-weight: 400; }
+        .typo-paragraph-mini-semibold { font-size: 12px; line-height: 1.4; font-weight: 600; }
+    </style>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 </head>
 ```
 
-**Why:**
-- `index.css` contains all foundation tokens (colors, spacing, typography, radius, shadows)
-- DO NOT replicate CSS variables - use the design system file
-- Design tokens are maintained in one place
+**Why this approach:**
+- SprouX design system uses Tailwind v4 with `@import "tailwindcss";` which requires build tools
+- HTML prototypes need standalone browser compatibility without build step
+- Tailwind CDN (v3) works directly in browsers with inline configuration
+- **Complete design system configured:** colors, spacing, sizing, typography
+- Design tokens defined as CSS custom properties (HSL values)
+- Typography utility classes defined in CSS (enables .typo-* classes)
+- Fonts loaded from Google Fonts (Geist for body, Fraunces for headings)
+- Lucide icons for professional icon system
 
-### 2. Always Include Metadata Attributes
+### 2. Use Lucide Icons for All UI Icons
+
+**Include Lucide CDN in `<head>`:**
+```html
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+```
+
+**Use icons in components:**
+```html
+<!-- Help icon -->
+<i data-lucide="help-circle" class="w-5 h-5"></i>
+
+<!-- Alert/warning icon -->
+<i data-lucide="alert-circle" class="w-5 h-5 text-destructive"></i>
+
+<!-- Success/check icon -->
+<i data-lucide="check" class="w-4 h-4"></i>
+
+<!-- Arrow icon -->
+<i data-lucide="arrow-right" class="w-5 h-5"></i>
+
+<!-- Clock icon -->
+<i data-lucide="clock" class="w-5 h-5"></i>
+
+<!-- Message icon -->
+<i data-lucide="message-circle" class="w-4 h-4"></i>
+
+<!-- Chart icon -->
+<i data-lucide="bar-chart-2" class="w-4 h-4"></i>
+
+<!-- Dollar icon -->
+<i data-lucide="dollar-sign" class="w-4 h-4"></i>
+```
+
+**Initialize icons before `</body>`:**
+```html
+<script>
+    lucide.createIcons();
+</script>
+</body>
+</html>
+```
+
+**Common Lucide icons for UI:**
+- `help-circle` - Help/info buttons
+- `alert-circle` - Errors, warnings, critical actions
+- `alert-triangle` - Warning states
+- `check` - Success, completed states
+- `x` - Close, cancel, remove
+- `arrow-right`, `arrow-left`, `arrow-up`, `arrow-down` - Navigation
+- `chevron-right`, `chevron-down` - Dropdowns, accordions
+- `clock` - Time-related actions
+- `message-circle` - Messages, comments
+- `bar-chart-2` - Analytics, charts
+- `dollar-sign` - Money, payments
+- `settings` - Settings, configuration
+- `user` - User profile
+- `search` - Search functionality
+
+**Why Lucide:**
+- Professional, consistent icon system
+- 1000+ icons available
+- Works via CDN (no build step)
+- Accessible (proper SVG implementation)
+- Customizable with Tailwind classes (size, color)
+
+### 3. Always Include Metadata Attributes
 
 **Required on every component:**
 ```html
@@ -556,11 +739,13 @@ For components not listed above, use this generic pattern:
 
 1. ✅ **ALWAYS include `data-component` attribute** - This is non-negotiable
 2. ✅ **ALWAYS include `data-figma-node`** - Read from `components.json`
-3. ✅ **Use Tailwind classes** - Never use inline styles or custom CSS classes
-4. ✅ **Add Tailwind CDN** - Include `<script src="https://cdn.tailwindcss.com"></script>` in `<head>`
-5. ✅ **Desktop-first responsive** - Base styles for 1440px, override for smaller screens
-6. ✅ **Semantic HTML** - Use proper `<button>`, `<input>`, `<label>`, etc.
-7. ✅ **Accessibility** - Include ARIA attributes when appropriate
+3. ✅ **Use Tailwind classes** - Custom classes now work: px-md, gap-xs, h-size-md, typo-heading-large
+4. ✅ **Add complete Tailwind CDN config** - Colors, spacing, sizing, typography all configured
+5. ✅ **Use Lucide icons** - Never use emojis or text symbols for icons
+6. ✅ **Initialize Lucide** - Add `<script>lucide.createIcons();</script>` before `</body>`
+7. ✅ **Desktop-first responsive** - Base styles for 1440px, override for smaller screens
+8. ✅ **Semantic HTML** - Use proper `<button>`, `<input>`, `<label>`, etc.
+9. ✅ **Accessibility** - Include ARIA attributes when appropriate
 
 ---
 
